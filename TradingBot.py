@@ -45,7 +45,7 @@ class Bot:
         print('\n',"BULLISH BOT ACTIVE")
         print('\n','I will use',Balance_use,'USDT in trades')
 
-        if (current_RSI >= 0).bool():
+        if (current_RSI <= 30).bool():
                 if not self.__in_position:
                     print('\n','BUYING NOW...')
                     order = self.__exchange.create_market_buy_order('ETH/USDT', Balance_use)
@@ -57,7 +57,7 @@ class Bot:
                 else:
                     print("You are in position, waiting for exit...")            
 
-        if (current_RSI >= 0).bool():
+        if (current_RSI >= 70).bool():
                 if self.__in_position:  
                      print('\n','SELLING NOW...')
                      order = self.__exchange.create_market_sell_order('ETH/USDT', Balance_use)
