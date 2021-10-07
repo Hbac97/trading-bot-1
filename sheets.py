@@ -13,13 +13,13 @@ class Sheets:
         self.__client = pygsheets.authorize(service_account_file='service_account.json')
         self.__sheet = self.__client.open_by_key(config.GOOGLE_SHEETS_SPREADSHEET_KEY)
 
-    def log(self,__exit_price,gains):
+    def log(self,__exit_price,__gains):
         self.now = datetime.now() 
         timestamp = self.now.strftime("%d/%m/%Y %H:%M:%S")
 
         print(self.__sheet)
 
-        sheets=[timestamp,__exit_price,gains]
+        sheets=[timestamp,__exit_price,__gains]
 
         df2=pd.DataFrame([sheets], columns=['timestamp', 'close', 'PNL'])
         df2.style.hide_index()

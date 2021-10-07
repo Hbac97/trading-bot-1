@@ -17,6 +17,7 @@ class Bot:
         self.__in_position = False
         self.__buy_price = None
         self.__exit_price = None
+        self.__gains = None
         self.__leverage = 10
         self.__stop_loss = 7.5
         self.__RSI_period = 14
@@ -44,7 +45,7 @@ class Bot:
         print('\n',"BULLISH BOT ACTIVE")
         print('\n','I will use',Balance_use,'USDT in trades')
 
-        if (current_RSI <= 30).bool():
+        if (current_RSI >= 0).bool():
                 if not self.__in_position:
                     print('\n','BUYING NOW...')
                     order = self.__exchange.create_market_buy_order('ETH/USDT', Balance_use)
@@ -56,15 +57,15 @@ class Bot:
                 else:
                     print("You are in position, waiting for exit...")            
 
-        if (current_RSI >= 70).bool():
+        if (current_RSI >= 0).bool():
                 if self.__in_position:  
                      print('\n','SELLING NOW...')
                      order = self.__exchange.create_market_sell_order('ETH/USDT', Balance_use)
                      print(order)
                      self.__exit_price=float(df['close'].tail(1))
                      price_difference = ((float(self.__buy_price.tail(1))/self.__exit_price)-1)
-                     gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
-                     self.notify(f'[Longing bot] Selling ETH at: {self.__exit_price} with {gains} gains')
+                     self.__gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
+                     self.notify(f'[Longing bot] Selling ETH at: {self.__exit_price} with {self.__gains} gains')
                      self.sheets_log()
                      self.__in_position = False
                 else:
@@ -82,8 +83,8 @@ class Bot:
                       print(order)
                       self.__exit_price=float(df['close'].tail(1))
                       price_difference = ((float(self.__buy_price.tail(1))/self.__exit_price)-1)
-                      gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
-                      self.notify(f'[Longing bot] {self.__stop_loss}% SL hit at: {self.__exit_price} with {gains} gains')
+                      self.__gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
+                      self.notify(f'[Longing bot] {self.__stop_loss}% SL hit at: {self.__exit_price} with {self.__gains} gains')
                       self.sheets_log()
                       self.__in_position = False  
 
@@ -91,7 +92,7 @@ class Bot:
         self.__notifier.notify(msg)
 
     def sheets_log(self):
-        self.__sheets.log(self.__exit_price,gains)
+        self.__sheets.log(self.__exit_price,self.__gains)
 
 execute = Bot()
 schedule.every(5).seconds.do(execute.run_bot)
