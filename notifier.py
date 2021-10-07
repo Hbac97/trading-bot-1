@@ -6,7 +6,4 @@ class Notifier():
         self.notifier = dn.Notifier(config.DISCORD_NOTIFY_WEBHOOK_URL)
 
     def notify(self,msg):
-        try:
-            notifier.send(msg)
-        except:
-            pass
+            self.notifier.send(msg)
