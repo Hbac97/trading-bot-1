@@ -23,6 +23,7 @@ class Bot:
         self.__entry_size = 0.7
 
     def run_bot(self):
+
         pd.set_option('display.max_rows', None)
         Balance = self.__exchange.fetch_balance()
         print(f"Fetching new bars for {datetime.now().isoformat()}")
@@ -50,7 +51,7 @@ class Bot:
                     print(order)
                     self.__buy_price = df['close']
                     buy_price_mess=float(self.__buy_price.tail(1))
-                    self.notify(f'[Longing bot]Buying ETH at: {buy_price_mess}',print_message=False)
+                    self.notify(f'[Longing bot]Buying ETH at: {buy_price_mess}')
                     self.__in_position = True
                 else:
                     print("You are in position, waiting for exit...")            
@@ -63,8 +64,8 @@ class Bot:
                      self.__exit_price=float(df['close'].tail(1))
                      price_difference = ((float(self.__buy_price.tail(1))/self.__exit_price)-1)
                      gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
-                     self.notify(f'[Longing bot] Selling ETH at: {self.__exit_price} with {gains} gains',print_message=False)
-                     sheets_log()
+                     self.notify(f'[Longing bot] Selling ETH at: {self.__exit_price} with {gains} gains')
+                     self.sheets_log()
                      self.__in_position = False
                 else:
                      print("You aren't in position, waiting for entry...")
@@ -82,8 +83,8 @@ class Bot:
                       self.__exit_price=float(df['close'].tail(1))
                       price_difference = ((float(self.__buy_price.tail(1))/self.__exit_price)-1)
                       gains = ("%.2f%%" %(float(price_difference)*100*self.__leverage*-1))
-                      self.notify(f'[Longing bot] {self.__stop_loss}% SL hit at: {self.__exit_price} with {gains} gains',print_message=False)
-                      sheets_log()
+                      self.notify(f'[Longing bot] {self.__stop_loss}% SL hit at: {self.__exit_price} with {gains} gains')
+                      self.sheets_log()
                       self.__in_position = False  
 
     def notify(self,msg):
